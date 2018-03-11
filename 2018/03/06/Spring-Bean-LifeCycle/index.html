@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Spring中bean的生命周期相对于Java传统的bean来说要复杂一些,可以对bean进行更全面的定制.">
 <meta property="og:image" content="http://yoursite.com/2018/03/06/Spring-Bean-LifeCycle/bean-lifecycle.png">
-<meta property="og:updated_time" content="2018-03-11T03:00:11.098Z">
+<meta property="og:updated_time" content="2018-03-11T03:04:22.081Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring Bean LifeCycle">
 <meta name="twitter:description" content="Spring中bean的生命周期相对于Java传统的bean来说要复杂一些,可以对bean进行更全面的定制.">
@@ -55,9 +55,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Buscar"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -93,9 +93,7 @@
 <h3 id="bean生命周期说明"><a href="#bean生命周期说明" class="headerlink" title="bean生命周期说明"></a>bean生命周期说明</h3><p>生命周期可以理解为从“出生”到“消亡”的整个过程,对Spring中bean来说这个过程包含bean创建—&gt;bean就绪可用—&gt;Spring上下文销毁整个过程.</p>
 <ol>
 <li><p>BeanFactoryPostProcessor<br>Spring配置文件加载之后首先进入的生命周期阶段为BeanFactoryPostProcessor#postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory).<br>从图示可以看到,这个阶段发生在所有bean初始化之前,意味着这个时候Spring管理的任何bean都没有开始开始创建,注意是没有开始创建而不是没有创建完成.这个阶段你可以对bean进行高级的定制,甚至是提前创建bean.需要注意的是BFPP类型的bean在使用@Bean注入时使用会存在一些问题,例如Spring提供的PropertySourcesPlaceholderConfigurer,后续会进行说明.</p>
-<blockquote>
-<p>Modify the application context’s internal bean factory after its standard initialization. All bean definitions will have been loaded, but no beans will have been instantiated yet. This allows for overriding or adding properties even to eager-initializing beans.</p>
-</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Modify the application context&apos;s internal bean factory after its standard initialization. All bean definitions will have been loaded, but no beans will have been instantiated yet. This allows for overriding or adding properties even to eager-initializing beans.</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>BeanNameAware<br>bean实例化(构造方法执行)以及属性配置完成后会进入BeanNameAware#setBeanName(String name)阶段,对于实现了BeanNameAware的bean,Spring会将bean的ID(配置文件中bean标签id)传递给setBeanName()方法</p>
 </li>
@@ -115,47 +113,12 @@
 <li><p>DisposableBean<br>容器关闭时执行,之后会继续执行自定义destroy-method指定的方法.</p>
 </li>
 </ol>
-<h3 id="完整的生命周期"><a href="#完整的生命周期" class="headerlink" title="完整的生命周期"></a>完整的生命周期</h3><p>Spring说明中有着更为完整的bean生命周期阶段,上述只是比较重要且常见的阶段,下面是Spring DOC关于生命周期的详细说明.</p>
-<blockquote>
-<ul>
-<li><p>Bean factory implementations should support the standard bean lifecycle interfaces<ul>
-<li>as far as possible. The full set of initialization methods and their standard order is:</li>
-<li><ol></ol></li>
-<li></li><li>BeanNameAware’s {@code setBeanName}</li>
-<li></li><li>BeanClassLoaderAware’s {@code setBeanClassLoader}</li>
-<li></li><li>BeanFactoryAware’s {@code setBeanFactory}</li>
-<li></li><li>EnvironmentAware’s {@code setEnvironment}</li>
-<li></li><li>EmbeddedValueResolverAware’s {@code setEmbeddedValueResolver}</li>
-<li></li><li>ResourceLoaderAware’s {@code setResourceLoader}</li>
-<li>(only applicable when running in an application context)</li>
-<li></li><li>ApplicationEventPublisherAware’s {@code setApplicationEventPublisher}</li>
-<li>(only applicable when running in an application context)</li>
-<li></li><li>MessageSourceAware’s {@code setMessageSource}</li>
-<li>(only applicable when running in an application context)</li>
-<li></li><li>ApplicationContextAware’s {@code setApplicationContext}</li>
-<li>(only applicable when running in an application context)</li>
-<li></li><li>ServletContextAware’s {@code setServletContext}</li>
-<li>(only applicable when running in a web application context)</li>
-<li></li><li>{@code postProcessBeforeInitialization} methods of BeanPostProcessors</li>
-<li></li><li>InitializingBean’s {@code afterPropertiesSet}</li>
-<li></li><li>a custom init-method definition</li>
-<li></li><li>{@code postProcessAfterInitialization} methods of BeanPostProcessors</li>
-<li><br>*</li>
-<li><p>On shutdown of a bean factory, the following lifecycle methods apply:</p></li>
-<li><ol></ol></li>
-<li></li><li>{@code postProcessBeforeDestruction} methods of DestructionAwareBeanPostProcessors</li>
-<li></li><li>DisposableBean’s {@code destroy}</li>
-<li></li><li>a custom destroy-method definition</li>
-<li></li>
-</ul>
-</p></li>
-</ul>
-</blockquote>
+<h3 id="完整的生命周期"><a href="#完整的生命周期" class="headerlink" title="完整的生命周期"></a>完整的生命周期</h3><p>Spring说明中有着更为完整的bean生命周期阶段,上述只是比较重要且常见的阶段,下面是Spring DOC关于生命周期的详细说明.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">* &lt;p&gt;Bean factory implementations should support the standard bean lifecycle interfaces</span><br><span class="line">* as far as possible. The full set of initialization methods and their standard order is:</span><br><span class="line">* &lt;ol&gt;</span><br><span class="line">* &lt;li&gt;BeanNameAware&apos;s &#123;@code setBeanName&#125;</span><br><span class="line">* &lt;li&gt;BeanClassLoaderAware&apos;s &#123;@code setBeanClassLoader&#125;</span><br><span class="line">* &lt;li&gt;BeanFactoryAware&apos;s &#123;@code setBeanFactory&#125;</span><br><span class="line">* &lt;li&gt;EnvironmentAware&apos;s &#123;@code setEnvironment&#125;</span><br><span class="line">* &lt;li&gt;EmbeddedValueResolverAware&apos;s &#123;@code setEmbeddedValueResolver&#125;</span><br><span class="line">* &lt;li&gt;ResourceLoaderAware&apos;s &#123;@code setResourceLoader&#125;</span><br><span class="line">* (only applicable when running in an application context)</span><br><span class="line">* &lt;li&gt;ApplicationEventPublisherAware&apos;s &#123;@code setApplicationEventPublisher&#125;</span><br><span class="line">* (only applicable when running in an application context)</span><br><span class="line">* &lt;li&gt;MessageSourceAware&apos;s &#123;@code setMessageSource&#125;</span><br><span class="line">* (only applicable when running in an application context)</span><br><span class="line">* &lt;li&gt;ApplicationContextAware&apos;s &#123;@code setApplicationContext&#125;</span><br><span class="line">* (only applicable when running in an application context)</span><br><span class="line">* &lt;li&gt;ServletContextAware&apos;s &#123;@code setServletContext&#125;</span><br><span class="line">* (only applicable when running in a web application context)</span><br><span class="line">* &lt;li&gt;&#123;@code postProcessBeforeInitialization&#125; methods of BeanPostProcessors</span><br><span class="line">* &lt;li&gt;InitializingBean&apos;s &#123;@code afterPropertiesSet&#125;</span><br><span class="line">* &lt;li&gt;a custom init-method definition</span><br><span class="line">* &lt;li&gt;&#123;@code postProcessAfterInitialization&#125; methods of BeanPostProcessors</span><br><span class="line">* &lt;/ol&gt;</span><br><span class="line">*</span><br><span class="line">* &lt;p&gt;On shutdown of a bean factory, the following lifecycle methods apply:</span><br><span class="line">* &lt;ol&gt;</span><br><span class="line">* &lt;li&gt;&#123;@code postProcessBeforeDestruction&#125; methods of DestructionAwareBeanPostProcessors</span><br><span class="line">* &lt;li&gt;DisposableBean&apos;s &#123;@code destroy&#125;</span><br><span class="line">* &lt;li&gt;a custom destroy-method definition</span><br><span class="line">* &lt;/ol&gt;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/03/06/Spring-Bean-LifeCycle/" data-id="cjem7ppb90003xssz3dv26a07" class="article-share-link">Compartir</a>
+      <a data-url="http://yoursite.com/2018/03/06/Spring-Bean-LifeCycle/" data-id="cjem7um89000390szfif6w4ot" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spirng-Bean-LifeCycle/">Spirng Bean LifeCycle</a></li></ul>
@@ -168,7 +131,7 @@
   
   
     <a href="/2018/02/24/Chrome-Plugins-Vimium/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Viejo</strong>
+      <strong class="article-nav-caption">Älter</strong>
       <div class="article-nav-title">Chrome Plugins Vimium</div>
     </a>
   
@@ -196,7 +159,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Nube de Tags</h3>
+    <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
       <a href="/tags/Chrome/" style="font-size: 10px;">Chrome</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Introductions/" style="font-size: 10px;">Introductions</a> <a href="/tags/Spirng-Bean-LifeCycle/" style="font-size: 10px;">Spirng Bean LifeCycle</a> <a href="/tags/Vimium/" style="font-size: 10px;">Vimium</a>
     </div>
@@ -205,7 +168,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archivos</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li></ul>
     </div>
@@ -215,7 +178,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Posts recientes</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
         
@@ -248,7 +211,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2018 Long<br>
-      Construido por <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
