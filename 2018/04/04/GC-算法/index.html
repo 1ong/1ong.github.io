@@ -5,19 +5,19 @@
   
 
   
-  <title>Chrome Plugins Vimium | Hexo</title>
+  <title>GC 算法 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="今天发现一款Chrome的快捷键插件：Vimium。相比于Chrome提供的快捷键更加方便且功能强大，下面记录几个常用的快捷键。 页面浏览12345678j: 向下翻页k: 向上翻页h: 向左翻页l: 向右翻页gg: 返回页面顶部G: 返回页面底部D: 向下翻一页U: 向上翻一页 标签页 检索已打开标签页有时候会打开多个标签页，当标签页达到一定数量浏览器会缩小每个标签页的宽度，这个时候标签页的标题">
-<meta name="keywords" content="Chrome,Vimium">
+  <meta name="description" content="GC常用的算法简介">
+<meta name="keywords" content="java jvm gc">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Chrome Plugins Vimium">
-<meta property="og:url" content="http://yoursite.com/2018/02/24/Chrome-Plugins-Vimium/index.html">
+<meta property="og:title" content="GC 算法">
+<meta property="og:url" content="http://yoursite.com/2018/04/04/GC-算法/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="今天发现一款Chrome的快捷键插件：Vimium。相比于Chrome提供的快捷键更加方便且功能强大，下面记录几个常用的快捷键。 页面浏览12345678j: 向下翻页k: 向上翻页h: 向左翻页l: 向右翻页gg: 返回页面顶部G: 返回页面底部D: 向下翻一页U: 向上翻一页 标签页 检索已打开标签页有时候会打开多个标签页，当标签页达到一定数量浏览器会缩小每个标签页的宽度，这个时候标签页的标题">
-<meta property="og:updated_time" content="2018-02-24T02:29:47.391Z">
+<meta property="og:description" content="GC常用的算法简介">
+<meta property="og:updated_time" content="2018-04-04T01:13:22.617Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chrome Plugins Vimium">
-<meta name="twitter:description" content="今天发现一款Chrome的快捷键插件：Vimium。相比于Chrome提供的快捷键更加方便且功能强大，下面记录几个常用的快捷键。 页面浏览12345678j: 向下翻页k: 向上翻页h: 向左翻页l: 向右翻页gg: 返回页面顶部G: 返回页面底部D: 向下翻一页U: 向上翻一页 标签页 检索已打开标签页有时候会打开多个标签页，当标签页达到一定数量浏览器会缩小每个标签页的宽度，这个时候标签页的标题">
+<meta name="twitter:title" content="GC 算法">
+<meta name="twitter:description" content="GC常用的算法简介">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -64,10 +64,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-Chrome-Plugins-Vimium" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-GC-算法" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/02/24/Chrome-Plugins-Vimium/" class="article-date">
-  <time datetime="2018-02-24T02:17:35.000Z" itemprop="datePublished">2018-02-24</time>
+    <a href="/2018/04/04/GC-算法/" class="article-date">
+  <time datetime="2018-04-04T00:46:54.000Z" itemprop="datePublished">2018-04-04</time>
 </a>
     
   </div>
@@ -78,7 +78,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Chrome Plugins Vimium
+      GC 算法
     </h1>
   
 
@@ -86,22 +86,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>今天发现一款Chrome的快捷键插件：Vimium。相比于Chrome提供的快捷键更加方便且功能强大，下面记录几个常用的快捷键。</p>
-<h3 id="页面浏览"><a href="#页面浏览" class="headerlink" title="页面浏览"></a>页面浏览</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">j: 向下翻页</span><br><span class="line">k: 向上翻页</span><br><span class="line">h: 向左翻页</span><br><span class="line">l: 向右翻页</span><br><span class="line">gg: 返回页面顶部</span><br><span class="line">G: 返回页面底部</span><br><span class="line">D: 向下翻一页</span><br><span class="line">U: 向上翻一页</span><br></pre></td></tr></table></figure>
-<h3 id="标签页"><a href="#标签页" class="headerlink" title="标签页"></a>标签页</h3><ol>
-<li><p>检索已打开标签页<br>有时候会打开多个标签页，当标签页达到一定数量浏览器会缩小每个标签页的宽度，这个时候标签页的标题就基本看不到了，再去寻找想要打开的标签页就比较麻烦了。Vimium提供了已打开标签页检索功能，“T” 快捷键可以列出当前打开的标签页，通过搜索可以快速定位。</p>
-</li>
-<li><p>打开新的标签页</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">t: 创建一个新的tab页</span><br><span class="line">J: 切换的左边的tab页</span><br><span class="line">K: 切换到右边的tab页</span><br></pre></td></tr></table></figure></li>
-</ol>
-
+        <p>GC常用的算法简介<br><a id="more"></a></p>
+<h3 id="标记-清除"><a href="#标记-清除" class="headerlink" title="标记-清除"></a>标记-清除</h3><h3 id="标记-复制"><a href="#标记-复制" class="headerlink" title="标记-复制"></a>标记-复制</h3><h3 id="标记-整理"><a href="#标记-整理" class="headerlink" title="标记-整理"></a>标记-整理</h3>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/02/24/Chrome-Plugins-Vimium/" data-id="cjfndb68x0000z0sz7qh9ivg7" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2018/04/04/GC-算法/" data-id="cjfndb69c0004z0sz94m7fp4x" class="article-share-link">Teilen</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chrome/">Chrome</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vimium/">Vimium</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-jvm-gc/">java jvm gc</a></li></ul>
 
     </footer>
   </div>
@@ -109,19 +102,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2018/03/06/Spring-Bean-LifeCycle/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/04/04/GC-Collector/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Neuer</strong>
       <div class="article-nav-title">
         
-          Spring Bean LifeCycle
+          GC Collector
         
       </div>
     </a>
   
   
-    <a href="/2018/02/23/Hexo-User-Case/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2018/04/02/Java-Memory-Allocation-Strategy/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Älter</strong>
-      <div class="article-nav-title">Hexo User Case</div>
+      <div class="article-nav-title">Java Memory Allocation Strategy</div>
     </a>
   
 </nav>

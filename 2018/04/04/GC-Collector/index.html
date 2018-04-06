@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>GC Collector | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="JAVA中提供的GC收集器">
+<meta name="keywords" content="java gc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GC Collector">
+<meta property="og:url" content="http://yoursite.com/2018/04/04/GC-Collector/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="JAVA中提供的GC收集器">
+<meta property="og:image" content="http://yoursite.com/2018/04/04/GC-Collector/serial.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/04/GC-Collector/serial.png">
+<meta property="og:image" content="http://yoursite.com/2018/04/04/GC-Collector/serial.png">
+<meta property="og:updated_time" content="2018-04-06T03:05:15.165Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GC Collector">
+<meta name="twitter:description" content="JAVA中提供的GC收集器">
+<meta name="twitter:image" content="http://yoursite.com/2018/04/04/GC-Collector/serial.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-GC-Collector" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/04/04/GC-Collector/" class="article-date">
+  <time datetime="2018-04-04T05:01:04.000Z" itemprop="datePublished">2018-04-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      GC Collector
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>JAVA中提供的GC收集器<br><a id="more"></a></p>
+<p>Java虚拟机中提供了众多的垃圾收集收集器实现内存的自动管理.使用分代收集算法对年轻代与老年代采取不同的收集器以达到最佳<br>的收集效果,下面对这些垃圾收集器做一些简要的记录,作为最近的学习笔记.</p>
+<h3 id="收集器分类"><a href="#收集器分类" class="headerlink" title="收集器分类"></a>收集器分类</h3><ol>
+<li>区域划分<table><br> <tr><br>    <th>年轻代</th><br>    <th>Serial</th><br>    <th>ParNew</th><br>    <th>Parallel Scavenge</th><br> </tr><br> <tr><br>    <th>老年代</th><br>    <th>Serial Old</th><br>    <th>Parallel Old</th><br>    <th>CMS</th><br> </tr><br></table>
+
+
+
+</li>
+</ol>
+<h3 id="收集器简介"><a href="#收集器简介" class="headerlink" title="收集器简介"></a>收集器简介</h3><ol>
+<li>串行收集器 Serial/Serial Old</li>
+</ol>
+<p>Serial是最基本也是历史最悠久的一款收集器, 相比于现阶段的各种收集器来说显得有些“老态龙钟”.Serial没有线程交互的开销,<br>收集器单线程专注于内存的回收,在一些桌面应用的场景中还是比较合适的。</p>
+<img src="/2018/04/04/GC-Collector/serial.png" title="Serial/Serial Old">
+<p>Serial收集器很明显在进行GC时会造成应用的“停顿”。这是这类串行收集器所不可避免的问题,也是GC收集发展过程中一直致力解决的痛点。<br>Serial收集作用于新生代,使用标记-复制算法.由于新生代的大部分对象都是”朝生夕逝”,因此这种算法更加高效适用。<br>Serial Old收集器作用于老年代,使用标记-整理算法。</p>
+<ol>
+<li>并行收集器 ParNew/Parallel Scavenge/Parallel Old</li>
+</ol>
+<ul>
+<li>ParNew<br>ParNew GC原理与Serial GC一致,最重要的区别是ParNew在GC时是并行的,即使用多个线程进行GC收集整理,但同样会造成应用的“停顿”。<br>Parallel Old GC与ParNew GC相比唯一的区别在于Parallel Old的GC算法是为老年代设计的,通常与Parallel Scavenge GC组合实现“吞吐量优先”的GC方案</li>
+</ul>
+<img src="/2018/04/04/GC-Collector/serial.png" title="Serial/Serial Old">
+<ul>
+<li>Parallel Scavenge<br>Parallel Scavenge收集器与ParNew收集器机制基本一致,但是最为重要的一点是Parallel Scavenge收集器对GC收集进行了“变革”。我们可以看到,在现代多核CPU<br>的环境下,ParNew收集器的多线程模式相对于Serial的单线程模式要更加高效,也意味着应用的“停顿”时间会更小,这也是GC收集器的目标:降低应用的“停顿”时间。<br>之所以说Parallel Scavenge收集器对GC收集进行了“变革”,是因为它更关注的是吞吐量,致力于GC的吞吐量可控。停顿时间的降低对于一些与用户交互的系统来说可以增加用户体验,但是对于一些运算的任务系统,更加关注的是系统的吞吐量,系统完成运算任务的高效性。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">吞吐量 = CPU用户代码执行时间 / (CPU用户代码执行时间 + GC收集消耗时间)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<img src="/2018/04/04/GC-Collector/serial.png" title="Parallel Scavenge/Parallel Old">
+<p>Parallel Scavenge收集器提供了可控的参数用于控制吞吐量:</p>
+<p>A.-XX:MaxGCPauseMillis GC最大停顿时间,GC收集器尽可能保证GC时间不超过设定值<br>注意:最小的停顿时间并不一定会提高GC收集速度,过小的停顿时间会导致GC收集更加频繁,吞吐量降低。</p>
+<p>B.-XX:GCTimeRatio GC时间占总时间的比率(GC时间最大比率 = 1 / (1 + N))  N为该选项设定的值,允许范围为1~99。</p>
+<p>C.-XX:+UseAdaptiveSizePolicy 动态调整开关. GC收集器根据系统的性能监控数据动态调整新生代大小(-Xmn)、Eden与Survivior比例(-XX:SurvivorRatio)、<br>晋升老年代对象年龄(-XX:PretenureSizeThreshold)等参数. </p>
+<ol>
+<li>并发收集器 CMS</li>
+</ol>
+<p>CMS是一款并发的收集器,实现原理依然是根据“标记-清除”算法,具体的执行流程如下图。可以看到CMS虽然是并发的,仍然会造成应用的“停顿”,<br>初始标记以及重新标记阶段虽然还会造成应用的“停顿”,但远比并行处理的时间要短。</p>
+<p>CMS收集器虽然可以做到并发执行,大大降低应用的“停顿”时间,但是也会有如下情况出现导致效果不佳:</p>
+<p>A.清理残留<br>从图中可以看出,在并发清除阶段,用户线程也在运行,这意味着此刻依然会产生的新的垃圾,而这些垃圾因为并没有在本次标记阶段进行标记,因此本次GC不会<br>进行回收,需要等到下一次的GC进行回收。</p>
+<p>B.预留空间<br>其他老年代的GC收集器在老年代几乎快要满是才进行GC收集,但是CMS由于是并发处理的,用户线程在GC时仍然需要一定的内存空间运行,因此CMS需要预留一部分空间在<br>并发处理时使用。可以通过参数-XX:CMSSlnitiatingOccupancyFraction(JDK1.6默认为92%,即当老年代的空间使用了92%时触发GC)来设定触发GC的时机。</p>
+<p>C.Concurrent Mode Failure<br>CMS运行期间预留的内存空间不够,无法满足应用的运行空间时会导致“Concurrent Mode Failure”,此时会进行GC的收集“降级”,此时会选用Serial Old作为GC收集器进行GC,导致应用的“停顿”时间变长。</p>
+<p>D.空间碎片<br>可以说是“标记-清除”算法的“通病”,这种算法会导致空间碎片过多,没有足够多的连续空间用于分配对象。当老年代空余空间整体较大大,但是连续性较差时,会导致某一次大对象没有最够的连续空间进行分配,此时就需要进行一次Full GC进行空间碎片整理以便腾出足够的连续空间进行分配。CMS对这种情况进行了优化,提供了参数<br>来进行提前整理。-XX:CMSFullGCsBeforeCompaction,即执行多少起不压缩整理的Full GC后进行一次压缩整理的,默认为0,意味着每次Full GC之前都要进行一次空间碎片压缩整理。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/04/04/GC-Collector/" data-id="cjfndb69a0003z0szya6bu9h5" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-gc/">java gc</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/04/04/GC-算法/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">GC 算法</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chrome/">Chrome</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Introductions/">Introductions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spirng-Bean-LifeCycle/">Spirng Bean LifeCycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vimium/">Vimium</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-gc/">java gc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-jvm-gc/">java jvm gc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvm-gc/">jvm gc</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Chrome/" style="font-size: 10px;">Chrome</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Introductions/" style="font-size: 10px;">Introductions</a> <a href="/tags/Spirng-Bean-LifeCycle/" style="font-size: 10px;">Spirng Bean LifeCycle</a> <a href="/tags/Vimium/" style="font-size: 10px;">Vimium</a> <a href="/tags/java-gc/" style="font-size: 10px;">java gc</a> <a href="/tags/java-jvm-gc/" style="font-size: 10px;">java jvm gc</a> <a href="/tags/jvm-gc/" style="font-size: 10px;">jvm gc</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/04/04/GC-Collector/">GC Collector</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/04/GC-算法/">GC 算法</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/02/Java-Memory-Allocation-Strategy/">Java Memory Allocation Strategy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/06/Spring-Bean-LifeCycle/">Spring Bean LifeCycle</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/24/Chrome-Plugins-Vimium/">Chrome Plugins Vimium</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Long<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
