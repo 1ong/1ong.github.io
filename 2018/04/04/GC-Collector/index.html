@@ -18,7 +18,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/04/04/GC-Collector/ParallelNew.png">
 <meta property="og:image" content="http://yoursite.com/2018/04/04/GC-Collector/ParallelScavenge.png">
 <meta property="og:image" content="http://yoursite.com/2018/04/04/GC-Collector/cms.png">
-<meta property="og:updated_time" content="2018-04-08T04:06:28.765Z">
+<meta property="og:updated_time" content="2018-04-08T05:13:24.183Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GC Collector">
 <meta name="twitter:description" content="JAVA中提供的GC收集器">
@@ -60,7 +60,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -129,14 +129,14 @@
 <img src="/2018/04/04/GC-Collector/cms.png" title="cms">
 <p>CMS收集器虽然可以做到并发执行,大大降低应用的“停顿”时间,但是也会有如下情况出现导致效果不佳:</p>
 <p>A.清理残留<br>从图中可以看出,在并发清除阶段,用户线程也在运行,这意味着此刻依然会产生的新的垃圾,而这些垃圾因为并没有在本次标记阶段进行标记,因此本次GC不会<br>进行回收,需要等到下一次的GC进行回收。</p>
-<p>B.预留空间<br>其他老年代的GC收集器在老年代几乎快要满是才进行GC收集,但是CMS由于是并发处理的,用户线程在GC时仍然需要一定的内存空间运行,因此CMS需要预留一部分空间在<br>并发处理时使用。可以通过参数-XX:CMSSlnitiatingOccupancyFraction(默认值为-1,通过java +XX:+PrintFlagsInitial查看)来设定触发GC的时机。CMS通过后台线程每隔一定时间间隔(-XX:CMSWaitDuration=2000 默认为2s)对Old Gen进行检测,当发现Old Gen空间<br>占用大小超过-XX:CMSSlnitiatingOccupancyFraction,就会触发CMS GC,CMS GC只会回收Old Gen,并不是所谓的Full GC。建议搭配-XX:+UseCMSInitiatingOccupancyOnly参数使用,简化CMS GC触发条件,只有在Old Gen占比满足条件的情况下才触发CMS GC。</p>
+<p>B.预留空间<br>其他老年代的GC收集器在老年代几乎快要满是才进行GC收集,但是CMS由于是并发处理的,用户线程在GC时仍然需要一定的内存空间运行,因此CMS需要预留一部分空间在<br>并发处理时使用。可以通过参数-XX:CMSSlnitiatingOccupancyFraction来设定触发GC的时机。-1表示该值由CMSTriggerRatio等参数计算<br>所得:CMSSlnitiatingOccupancyFraction=(100-MinHeapFreeRatio)+(CMSTriggerRatio * MinHeapFreeRatio/100)。JDK1.6/1.7/1.8为92。CMS通过后台线程每隔一定时间间隔(-XX:CMSWaitDuration=2000 默认为2s)对Old Gen进行检测,当发现Old Gen空间占用大小超过-XX:CMSSlnitiatingOccupancyFraction,就会触发CMS GC,CMS GC只会回收Old Gen,并不是所谓的Full GC。附R大的专业解答:<a href="https://www.zhihu.com/question/41922036" target="_blank" rel="noopener">Major GC和Full GC的区别是什么</a>建议搭配-XX:+UseCMSInitiatingOccupancyOnly参数使用,简化CMS GC触发条件,只有在Old Gen占比满足条件的情况下才触发CMS GC。</p>
 <p>C.Concurrent Mode Failure<br>CMS运行期间预留的内存空间不够,无法满足应用的运行空间时会导致“Concurrent Mode Failure”,此时会进行GC的收集“降级”,此时会选用Serial Old作为GC收集器进行GC,导致应用的“停顿”时间变长。</p>
 <p>D.空间碎片<br>可以说是“标记-清除”算法的“通病”,这种算法会导致空间碎片过多,没有足够多的连续空间用于分配对象。当老年代空余空间整体较大大,但是连续性较差时,会导致某一次大对象没有最够的连续空间进行分配,此时就需要进行一次Full GC进行空间碎片整理以便腾出足够的连续空间进行分配。CMS对这种情况进行了优化,提供了参数<br>来进行提前整理。-XX:CMSFullGCsBeforeCompaction,即执行多少起不压缩整理的Full GC后进行一次压缩整理的,默认为0,意味着每次Full GC之前都要进行一次空间碎片压缩整理。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/04/04/GC-Collector/" data-id="cjfqadpz00000iwsz1scvew2q" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/04/04/GC-Collector/" data-id="cjfqff2dx0008jsszuytp9jjs" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-gc/">java gc</a></li></ul>
@@ -148,7 +148,7 @@
 <nav id="article-nav">
   
     <a href="/2018/04/07/GC-日志分析/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
+      <strong class="article-nav-caption">Neuer</strong>
       <div class="article-nav-title">
         
           GC-日志分析
@@ -158,7 +158,7 @@
   
   
     <a href="/2018/04/04/GC-算法/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
+      <strong class="article-nav-caption">Älter</strong>
       <div class="article-nav-title">GC 算法</div>
     </a>
   
@@ -195,7 +195,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li></ul>
     </div>
@@ -205,7 +205,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
         
