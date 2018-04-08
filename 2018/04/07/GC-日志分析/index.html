@@ -5,17 +5,19 @@
   
 
   
-  <title>Tag: java gc | Hexo</title>
+  <title>GC-日志分析 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Java SpringBoot">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/tags/java-gc/index.html">
+  <meta name="description" content="JVM GC日志分析">
+<meta name="keywords" content="java gc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GC-日志分析">
+<meta property="og:url" content="http://yoursite.com/2018/04/07/GC-日志分析/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Java SpringBoot">
+<meta property="og:description" content="JVM GC日志分析">
+<meta property="og:updated_time" content="2018-04-07T07:37:00.949Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
-<meta name="twitter:description" content="Java SpringBoot">
+<meta name="twitter:title" content="GC-日志分析">
+<meta name="twitter:description" content="JVM GC日志分析">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -62,59 +64,61 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/04/07/GC-日志分析/" class="archive-article-date">
-  <time datetime="2018-04-07T07:21:14.000Z" itemprop="datePublished">Apr 7</time>
+        <section id="main"><article id="post-GC-日志分析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/04/07/GC-日志分析/" class="article-date">
+  <time datetime="2018-04-07T07:21:14.000Z" itemprop="datePublished">2018-04-07</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/07/GC-日志分析/">GC-日志分析</a>
+    <h1 class="article-title" itemprop="name">
+      GC-日志分析
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/04/04/GC-Collector/" class="archive-article-date">
-  <time datetime="2018-04-04T05:01:04.000Z" itemprop="datePublished">Apr 4</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/04/GC-Collector/">GC Collector</a>
-    </h1>
-  
+        <p>JVM GC日志分析<br><a id="more"></a></p>
+<h3 id="GC日志标识说明"><a href="#GC日志标识说明" class="headerlink" title="GC日志标识说明"></a>GC日志标识说明</h3><ul>
+<li>DefNew: 全称Default New Generation,表示使用的是新生代收集器Serail。GC发生的区域为新生代。</li>
+<li>ParNew: 全称Parallel New Generation,表示使用的是新生代收集器ParNew。GC发生的区域为新生代。</li>
+<li>PSYoungGen: 全称Parallel Scavenge Young Generation,表示使用的是新生代收集器Parallel Scavenge。GC发生的区域为新生代。</li>
+<li>ParOldGen: 全称Parallel Old Generation,表示是使用的是老年代收集器Parallel Old。GC发生区域为老年代。</li>
+<li></li>
+</ul>
 
-    </header>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/04/07/GC-日志分析/" data-id="cjfqa312u0001f0szg3sgmlop" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-gc/">java gc</a></li></ul>
+
+    </footer>
   </div>
-</article>
+  
+    
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2018/04/04/GC-Collector/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">GC Collector</div>
+    </a>
   
+</nav>
 
+  
+</article>
 
 </section>
         
