@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Lock-原理 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Java中锁的实现原理分析">
+<meta name="keywords" content="java lock">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lock-原理">
+<meta property="og:url" content="http://yoursite.com/2018/04/21/Lock-原理/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Java中锁的实现原理分析">
+<meta property="og:image" content="http://yoursite.com/2018/04/21/Lock-原理/queue-set-tail.png">
+<meta property="og:updated_time" content="2018-04-21T07:21:24.202Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Lock-原理">
+<meta name="twitter:description" content="Java中锁的实现原理分析">
+<meta name="twitter:image" content="http://yoursite.com/2018/04/21/Lock-原理/queue-set-tail.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Lock-原理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/04/21/Lock-原理/" class="article-date">
+  <time datetime="2018-04-21T02:18:07.000Z" itemprop="datePublished">2018-04-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Lock-原理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Java中锁的实现原理分析<br><a id="more"></a></p>
+<h3 id="传统锁与新型锁"><a href="#传统锁与新型锁" class="headerlink" title="传统锁与新型锁"></a>传统锁与新型锁</h3><ol>
+<li>Synchronized</li>
+</ol>
+<ul>
+<li>隐式的获取与释放</li>
+<li>阻塞式的获取锁</li>
+<li>可操作性差</li>
+</ul>
+<ol>
+<li>Lock</li>
+</ol>
+<ul>
+<li>显式的获取与释放锁</li>
+<li>提供多种方式获取锁,非阻塞、阻塞、超时、中断</li>
+<li>可操作性强</li>
+</ul>
+<h3 id="核心零件-队列同步器"><a href="#核心零件-队列同步器" class="headerlink" title="核心零件-队列同步器"></a>核心零件-队列同步器</h3><ol>
+<li>主要作用<br>队列同步器是一个抽象类,作为实现锁的关键提供一系列如同步状态获取释放、线程等待唤醒等同步场景下的基础功能。<br>以模板模式的设计方式提供实现锁基础的抽象方法与模板方法。<br>(同步状态的表述方式是站在队列同步器内部实现的角度,在锁的使用层面理解为锁的获取,两种在本质上是一致的,<br>下面均以同步状态来描述)</li>
+</ol>
+<ol>
+<li><p>重写方法<br>tryAcquire(int arg):独占式获取锁<br>tryRelease(int arg):独占式释放锁<br>tryAcquireShared(int arg):共享式获取锁<br>tryReleaseShared(int arg):共享式释放锁<br>isHeldExclusively():当前线程是否独占式的占用锁</p>
+</li>
+<li><p>模板方法</p>
+</li>
+</ol>
+<ul>
+<li><p>acquire(int arg)<br>独占式的获取同步状态,获取成功返回,获取失败进入同步队列等待。理解为获取锁,锁实现获取锁需要<br>调用该模本方法,具体锁的获取逻辑由锁重写的tryAcquire(int arg)实现。那获取失败进入同步队列等待如何实现呢？不用<br>担心,这正是队列同步器的好处所在,线上获取锁失败后的等待唤醒状态由队列同步器提供的方法实现,无需关注这一点。</p>
+</li>
+<li><p>acquireInterruptibly(int arg)<br>与acquire(int arg)一致,唯一区别是该方法会响应中断</p>
+</li>
+<li><p>tryAcquireNanos(int arg, long nanosTimeout)<br>在acquireInterruptibly(int arg)增加了超时机制,超过指定时间没有获取到同步状态则返回flase</p>
+</li>
+<li><p>acquireShared(int arg)<br>共享式的获取同步状态。与独占式的获取同步状态的区别是同一时刻可以有多个线程可以同时获取到同步状态。</p>
+</li>
+<li><p>acquireSharedInterruptibly(int arg)<br>与aacquireShared(int arg)一致,唯一区别是该方法会响应中断</p>
+</li>
+<li><p>tryAcquireSharedNanos(int arg, long nanosTimeout)<br>在acquireSharedInterruptibly(int arg)增加了超时机制,超过指定时间没有获取到同步状态则返回flase</p>
+</li>
+<li><p>release(int arg)<br>独占式释放锁,具体逻辑有所重写的tryRelease(int arg)实现</p>
+</li>
+<li><p>releaseShared(int arg)<br>共享式释放锁,具体逻辑有所重写的tryReleaseShared(int arg)实现</p>
+</li>
+</ul>
+<ol>
+<li>实现原理</li>
+</ol>
+<ul>
+<li>同步队列<br>对于获取同步状态失败的线程会被加入到队列同步器所维护的一个FIFO的双向队列中进行阻塞等待,当同步状态被释放<br>时,队列同步器会首先唤醒同步队列中的首节点,使其尝试再次获取同步状态。</li>
+</ul>
+<p>同步队列通过设置构建当前线程节点并设置为尾节点将获取同步状态失败的线程加入到同步队列中。</p>
+<ul>
+<li>添加尾节点<br>线程被添加到尾节点意味着线程获取同步状态失败。有个关键点需要注意的是加入到同步队列的操作要保证是线程安全的,<br>是因为同一时刻只能有一个线程获取同步状态成功,而其他线程获取同步状态失败时都会被加入到同步队列,由于双向同步<br>队列是链表的数据结构,因此线程不安全的操作会导致队列中的顺序混乱。</li>
+</ul>
+<p>那同步队列是如何线程安全的将线程构造成节点并设置成尾节点的呢？<br>同步队列使用CAS操作确保线程安全的将线程构造成节点并设置成尾节点,如图所示:</p>
+<img src="/2018/04/21/Lock-原理/queue-set-tail.png" title="设置尾节点">
+<ul>
+<li><p>添加首节点<br>首节点是获取同步状态成功的线程。当该线程释放同步状态时,会唤醒后继节点,后继节点会继续尝试获取同步状态,<br>获取成功后将该自身设置为新的首节点。与设置尾节点不同的是设置首节点不需要使用CAS操作,因为设置首节点的线程是<br>已经获取了同步状态的线程,是线程安全的。</p>
+</li>
+<li><p>同步等待<br>当获取同步状态失败的线程被添加到同步队列的尾节点后相当于完成了重要的一步,接下来就是如何管理控制这些同步队列中的线程呢?<br>同步队列中的线程会进行自旋操作,那自旋何时停止呢?当前线程的前继节点是首节点时会再次尝试获取同步状态,获取成功后退出自旋操作</p>
+</li>
+</ul>
+<h3 id="重入锁"><a href="#重入锁" class="headerlink" title="重入锁"></a>重入锁</h3><p>锁重入字如其意,是说一个线程在获取锁成功之后再次获取同一个锁是不会被阻塞的。那这样如何释放锁呢？<br>在重入获取n次锁之后,也应该同样释放n次,之后全部释放之后锁才真正被释放,其他等待的线程才能尝试获取<br>同步状态。<br>其实无论是支持重入还是其他如读写锁等,在队列同步器的支持之下我们都很容易实现,因为我们只需要做的是<br>给出当前线程是否可以成功的获取到同步状态,至于获取失败之后的同步等待这些队列同步器都帮我们提供了现<br>成的实现,我们更多的是考虑同步状态获取成功与否的逻辑。</p>
+<p>回到正题,那重入锁是如何实现的呢?以ReentrantLock为例,我们可以看到其增加了一个计数,如果是当前线程在<br>获取同步状态成功的基础上再次获取锁会对同步状态进行累加,同样的,释放锁的时候只有同步状态计数为0才能<br>真正的释放锁。</p>
+<p>在队列同步器的基础上,我们可以根据使用场景构建获取同步状态的逻辑从而自定义更多的锁。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/04/21/Lock-原理/" data-id="cjhis4rs6000bmwszau8ot2pl" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-lock/">java lock</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/04/21/Condition-等待-通知/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          Condition 等待/通知
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/04/16/Redis-数据持久化/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Redis-数据持久化</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chrome/">Chrome</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Introductions/">Introductions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL-索引/">MySQL 索引</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis-AOF-快照/">Redis AOF 快照</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spirng-Bean-LifeCycle/">Spirng Bean LifeCycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vimium/">Vimium</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-gc/">java gc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-jvm-gc/">java jvm gc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-lock/">java lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-wait-condition/">java wait condition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-泛型/">java 泛型</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvm-gc/">jvm gc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot-health/">spring boot health</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wait-notify/">wait notify</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程-高并发/">多线程 高并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程间通信/">线程间通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转账服务/">转账服务</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Chrome/" style="font-size: 10px;">Chrome</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Introductions/" style="font-size: 10px;">Introductions</a> <a href="/tags/MySQL-索引/" style="font-size: 10px;">MySQL 索引</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Redis-AOF-快照/" style="font-size: 10px;">Redis AOF 快照</a> <a href="/tags/Spirng-Bean-LifeCycle/" style="font-size: 10px;">Spirng Bean LifeCycle</a> <a href="/tags/Vimium/" style="font-size: 10px;">Vimium</a> <a href="/tags/java-gc/" style="font-size: 20px;">java gc</a> <a href="/tags/java-jvm-gc/" style="font-size: 10px;">java jvm gc</a> <a href="/tags/java-lock/" style="font-size: 10px;">java lock</a> <a href="/tags/java-wait-condition/" style="font-size: 10px;">java wait condition</a> <a href="/tags/java-泛型/" style="font-size: 10px;">java 泛型</a> <a href="/tags/jvm-gc/" style="font-size: 10px;">jvm gc</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/spring-boot-health/" style="font-size: 10px;">spring boot health</a> <a href="/tags/wait-notify/" style="font-size: 10px;">wait notify</a> <a href="/tags/多线程-高并发/" style="font-size: 10px;">多线程 高并发</a> <a href="/tags/线程间通信/" style="font-size: 10px;">线程间通信</a> <a href="/tags/转账服务/" style="font-size: 10px;">转账服务</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/05/23/转账服务说明/">转账服务说明</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/02/MySQL-索引/">MySQL-索引</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/21/Condition-等待-通知/">Condition 等待/通知</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/21/Lock-原理/">Lock-原理</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/16/Redis-数据持久化/">Redis-数据持久化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Long<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

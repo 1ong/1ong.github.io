@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://yoursite.com/2018/04/08/多线程-Synchronized/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="并发编程中synchronized关键字的使用">
-<meta property="og:updated_time" content="2018-04-10T05:02:46.609Z">
+<meta property="og:updated_time" content="2018-04-28T01:08:35.042Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多线程-Synchronized">
 <meta name="twitter:description" content="并发编程中synchronized关键字的使用">
@@ -53,9 +53,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -88,29 +88,28 @@
       
         <p>并发编程中synchronized关键字的使用<br><a id="more"></a></p>
 <h3 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h3><ul>
-<li>synchronized方法</li>
-<li>synchronized代码块</li>
+<li>普通synchronized方法</li>
+<li>普通synchronized代码块</li>
 <li>静态synchronized方法</li>
 <li>静态synchronized代码块</li>
 </ul>
 <h3 id="锁粒度"><a href="#锁粒度" class="headerlink" title="锁粒度"></a>锁粒度</h3><ol>
-<li><p>方法<br>同一个实例<br>对象锁,对类的同一个实例起作用</p>
+<li><p>同步方法<br>静态方法: 类锁,对类加锁,不同实例存在锁竞争关系<br>普通方法: 对象锁,对同一个实例加锁</p>
 </li>
-<li><p>同步代码块<br>synchronized(非this对象Object) 是将Object对象本身作为“对象监视器”。这里是对同一个对象的同一个实例加锁,不同实例不是同一个锁</p>
+<li><p>同步代码块<br>synchronized(Object) 是将Object对象本身作为“对象监视器”。这里是对同一个对象的同一个实例加锁,不同实例不是同一个锁。<br>synchronized(Class)  是将Class作为“类监视器”。这里是对同一个对象的不同实例加锁,不同实例存在锁竞争关系。</p>
 </li>
-<li><p>静态方法/静态代码块<br>class锁,对类的所有实例作用<br>注意:静态同步方法的锁同普通同步方法的锁不是同一个锁,不存在竞争阻塞关系</p>
-<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3></li>
 </ol>
-<ul>
+<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ul>
 <li>可重入 支持父子类继承,子类获取同步锁之后可以通过”可重入锁”调用父类的同步方法</li>
 <li>同步不具有继承性,子类重写父类同步方法,但是没有使用synchronized关键字修饰不具备同步特性</li>
-<li></li>
+<li>执行过程中发生异常会释放锁</li>
 </ul>
+<h3 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h3><p>理解两个线程在synchronized上是否互斥需要理解对象锁与类锁.调用无非是多个线程调用同一个同步方法或者不同同步方法.<br>同一个同步方法很容易理解,如果同步方法是对象锁那多个线程是否互斥取决于他们是否是对同一个对象实例锁竞争.如果是类<br>锁,那无论这些线程是哪个对象实例都需要互斥.<br>不同方法的调用需要注意,这里大概可以分为方法都是类锁或对象锁或者一个是对象锁,一个是类锁.第一种情况互斥情况与同一个<br>同步方法一致,取决是否是同一个类会对象.第二种情况需要注意,即使一个方法是对类加锁,语义上是对该类的全部实例加锁,但实际上<br>他是类锁,与对象锁完全不是同一个锁,因此另一个方法是对象锁的话两种是不存在竞争关系的.</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/04/08/多线程-Synchronized/" data-id="cjftequxs000fmoszvfi0uo43" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2018/04/08/多线程-Synchronized/" data-id="cjhis4rsl000rmwszq1ol7pjh" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/多线程-高并发/">多线程 高并发</a></li></ul>
@@ -122,7 +121,7 @@
 <nav id="article-nav">
   
     <a href="/2018/04/10/Spring-Dependency-Injection/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Récent</strong>
+      <strong class="article-nav-caption">Neuer</strong>
       <div class="article-nav-title">
         
           Spring Dependency Injection
@@ -132,7 +131,7 @@
   
   
     <a href="/2018/04/07/GC-日志分析/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Ancien</strong>
+      <strong class="article-nav-caption">Älter</strong>
       <div class="article-nav-title">GC-日志分析</div>
     </a>
   
@@ -150,9 +149,9 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Mot-clés</h3>
+    <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chrome/">Chrome</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Introductions/">Introductions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spirng-Bean-LifeCycle/">Spirng Bean LifeCycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vimium/">Vimium</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-gc/">java gc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-jvm-gc/">java jvm gc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvm-gc/">jvm gc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot-health/">spring boot health</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程-高并发/">多线程 高并发</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chrome/">Chrome</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Introductions/">Introductions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL-索引/">MySQL 索引</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis-AOF-快照/">Redis AOF 快照</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spirng-Bean-LifeCycle/">Spirng Bean LifeCycle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vimium/">Vimium</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-gc/">java gc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-jvm-gc/">java jvm gc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-lock/">java lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-wait-condition/">java wait condition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-泛型/">java 泛型</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvm-gc/">jvm gc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot-health/">spring boot health</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wait-notify/">wait notify</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程-高并发/">多线程 高并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程间通信/">线程间通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转账服务/">转账服务</a></li></ul>
     </div>
   </div>
 
@@ -160,18 +159,18 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Nuage de mot-clés</h3>
+    <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Chrome/" style="font-size: 10px;">Chrome</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Introductions/" style="font-size: 10px;">Introductions</a> <a href="/tags/Spirng-Bean-LifeCycle/" style="font-size: 10px;">Spirng Bean LifeCycle</a> <a href="/tags/Vimium/" style="font-size: 10px;">Vimium</a> <a href="/tags/java-gc/" style="font-size: 20px;">java gc</a> <a href="/tags/java-jvm-gc/" style="font-size: 10px;">java jvm gc</a> <a href="/tags/jvm-gc/" style="font-size: 10px;">jvm gc</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/spring-boot-health/" style="font-size: 10px;">spring boot health</a> <a href="/tags/多线程-高并发/" style="font-size: 10px;">多线程 高并发</a>
+      <a href="/tags/Chrome/" style="font-size: 10px;">Chrome</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Introductions/" style="font-size: 10px;">Introductions</a> <a href="/tags/MySQL-索引/" style="font-size: 10px;">MySQL 索引</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Redis-AOF-快照/" style="font-size: 10px;">Redis AOF 快照</a> <a href="/tags/Spirng-Bean-LifeCycle/" style="font-size: 10px;">Spirng Bean LifeCycle</a> <a href="/tags/Vimium/" style="font-size: 10px;">Vimium</a> <a href="/tags/java-gc/" style="font-size: 20px;">java gc</a> <a href="/tags/java-jvm-gc/" style="font-size: 10px;">java jvm gc</a> <a href="/tags/java-lock/" style="font-size: 10px;">java lock</a> <a href="/tags/java-wait-condition/" style="font-size: 10px;">java wait condition</a> <a href="/tags/java-泛型/" style="font-size: 10px;">java 泛型</a> <a href="/tags/jvm-gc/" style="font-size: 10px;">jvm gc</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/spring-boot-health/" style="font-size: 10px;">spring boot health</a> <a href="/tags/wait-notify/" style="font-size: 10px;">wait notify</a> <a href="/tags/多线程-高并发/" style="font-size: 10px;">多线程 高并发</a> <a href="/tags/线程间通信/" style="font-size: 10px;">线程间通信</a> <a href="/tags/转账服务/" style="font-size: 10px;">转账服务</a>
     </div>
   </div>
 
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li></ul>
     </div>
   </div>
 
@@ -179,28 +178,28 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
         
           <li>
-            <a href="/2018/04/10/Spring-Boot-Health-Endpoint/">Spring Boot Health Endpoint</a>
+            <a href="/2018/05/23/转账服务说明/">转账服务说明</a>
           </li>
         
           <li>
-            <a href="/2018/04/10/Spring-Dependency-Injection/">Spring Dependency Injection</a>
+            <a href="/2018/05/02/MySQL-索引/">MySQL-索引</a>
           </li>
         
           <li>
-            <a href="/2018/04/08/多线程-Synchronized/">多线程-Synchronized</a>
+            <a href="/2018/04/21/Condition-等待-通知/">Condition 等待/通知</a>
           </li>
         
           <li>
-            <a href="/2018/04/07/GC-日志分析/">GC-日志分析</a>
+            <a href="/2018/04/21/Lock-原理/">Lock-原理</a>
           </li>
         
           <li>
-            <a href="/2018/04/04/GC-Collector/">GC Collector</a>
+            <a href="/2018/04/16/Redis-数据持久化/">Redis-数据持久化</a>
           </li>
         
       </ul>
@@ -216,7 +215,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2018 Long<br>
-      Propulsé par <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
